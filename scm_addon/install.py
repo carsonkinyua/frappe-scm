@@ -17,6 +17,7 @@ def after_install():
 
     setup_custom_fields()
     seed_weekdays()
+    seed_todo_activity_feedback()
 
 
 def after_migrate():
@@ -27,6 +28,7 @@ def after_migrate():
 
     setup_custom_fields()
     seed_weekdays()
+    seed_todo_activity_feedback()
 
     try:
         ensure_all_sales_people_initialized()
@@ -72,5 +74,18 @@ def seed_weekdays():
             doc = frappe.get_doc({
                 "doctype": "Weekday",
                 "day_name": day,
+            })
+            doc.insert()
+
+
+def seed_todo_activity_feedback():
+    """Pre-create predefined feedback types for Todo Activity Feedback."""
+    feedback_types = ["Good", "Excellent", "Bad", "Better"]
+
+    for feedback_type in feedback_types:
+        if not frappe.db.exists("Todo Activity Feedback", feedback_type):
+            doc = frappe.get_doc({
+                "doctype": "Todo Activity Feedback",
+                "feedback_name": feedback_type,
             })
             doc.insert()
